@@ -1,0 +1,58 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    
+    container_name: challenge_backend
+
+    env_file:
+      - .env
+
+    depends_on:
+      - postgres
+
+    networks:
+      - challenge_network
+    volumes:
+      - ./backend:/app  # Opcional, útil para desarrollo
+
+  postgres:
+    image: postgres:17.4-alpine3.21
+    restart: always
+
+    env_file:
+      - .env
+
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5455:5432"
+
+    networks:
+      - challenge_network
+
+    container_name: challenge_db
+
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - challenge_network
+
+volumes:
+  postgres_data:
+
+networks:
+  challenge_network:
+    driver: bridge
