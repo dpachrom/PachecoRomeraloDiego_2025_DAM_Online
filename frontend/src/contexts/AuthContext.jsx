@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import api from "../api";
 import { loginRequest, getMe } from "../services/AuthService";
+import { set } from "../../../backend/src/config/database";
 
 export const AuthContext = createContext();
 
@@ -16,11 +17,10 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserData = useCallback(async () => {
     try {
-      const response = await api.get("/auth/me");
-
-      console.log("Respuesta de /auth/me:", response.data);
-
-      setUser({ ...response.data, isAuthenticated: true });
+      //const response = await api.get("/auth/me");
+      const data = await getMe();
+      setUser({...data, isAuthenticated: true});
+      //console.log("Respuesta de /auth/me:", response.data);
     } catch (error) {
       console.error("Error al obtener usuario:", error);
       logout();
@@ -37,8 +37,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await api.post("/auth/login", { email, password });
-      const receivedToken = response.data.token;
+      const receivedToken = await loginRequest(email, password);
       sessionStorage.setItem("token", receivedToken);
       setToken(receivedToken);
       await fetchUserData();
