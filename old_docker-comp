@@ -15,7 +15,7 @@ services:
     networks:
       - challenge_network
     volumes:
-      - ./backend:/app  # Opcional, útil para desarrollo
+      - ./backend:/app
 
   postgres:
     image: postgres:17.4-alpine3.21
