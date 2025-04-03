@@ -1,6 +1,3 @@
-// npm run dev 
-// para lanzar el server
-
 require('dotenv').config();
 
 const express = require('express');
@@ -15,11 +12,11 @@ app.use(cors({
   origin: 'http://localhost:3000'
 }));
 
-// Importar rutas
+// Routes import
 const authRoutes = require('./src/routers/authRoutes');
 const userRoutes = require('./src/routers/userRoutes');
 
-// Definir rutas base
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
@@ -27,11 +24,11 @@ const PORT = process.env.PORT || 5000;
 
 sequelize.sync({alter:true})
   .then(() => {
-    console.log('Conexión a la base de datos establecida');
+    console.log('Database connected successfully');
     app.listen(PORT, () => {
-      console.log(`Servidor corriendo en puerto ${PORT}`);
+      console.log(`Server running at port ${PORT}`);
     });
   })
   .catch(err => {
-    console.error('Error al conectar a la base de datos:', err);
+    console.error('Database connection error :', err);
   });
