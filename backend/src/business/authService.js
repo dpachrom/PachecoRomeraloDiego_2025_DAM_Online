@@ -6,12 +6,12 @@ const createError = require("../utils/createError");
 const login = async (email, password) => {
   const user = await User.findOne({ where: { email } });
   if (!user) {
-    throw createError("Usuario no encontrado", 401);
+    throw createError("User not found", 401);
   }
 
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) {
-    throw createError("Contraseña incorrecta", 401);
+    throw createError("Wrong password", 401);
   }
 
   const token = jwt.sign(

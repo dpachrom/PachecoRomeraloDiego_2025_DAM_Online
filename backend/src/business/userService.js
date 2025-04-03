@@ -5,7 +5,7 @@ const createError = require('../utils/createError');
 const getUserById = async (id) => {
   const user = await User.findByPk(id, { attributes: { exclude: ['password'] } });
   if (!user) {
-    throw createError('Usuario no encontrado', 404);
+    throw createError('User not found', 404);
   }
   return user;
 };
@@ -13,7 +13,7 @@ const getUserById = async (id) => {
 const updateUserProfile = async (id, data) => {
   const user = await User.findByPk(id);
   if (!user) {
-    throw createError('Usuario no encontrado', 404);
+    throw createError('Wrong password', 404);
   }
   
   if (data.password) {
