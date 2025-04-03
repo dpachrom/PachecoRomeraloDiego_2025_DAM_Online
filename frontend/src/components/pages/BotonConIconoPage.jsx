@@ -1,7 +1,7 @@
 import React from "react";
 import BotonConIconoMolecule from "../molecules/IconButtonMol";
 
-const BotonConIconoPage = () => {
+const ButtonWithIconPage = () => {
   return (
     <div>
       <BotonConIconoMolecule />
@@ -9,4 +9,4 @@ const BotonConIconoPage = () => {
   );
 };
 
-export default BotonConIconoPage;
+export default ButtonWithIconPage;

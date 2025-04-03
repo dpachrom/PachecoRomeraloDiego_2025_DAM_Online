@@ -12,7 +12,7 @@ const LoginPage = () => {
   const handleLogin = async (data) => {
     try {
       await login(data.email, data.password);
-      navigate("/boton-con-icono-page", { replace: true });
+      navigate("/button-with-icon-page", { replace: true });
     } catch (error) {
       console.error("Error en login:", error);
     }

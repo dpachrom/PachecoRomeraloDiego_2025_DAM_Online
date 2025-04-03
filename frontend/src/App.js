@@ -10,7 +10,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 
 // Pages imports
-import BotonConIconoPage from "./components/pages/BotonConIconoPage";
+import ButtonWithIconPage from "./components/pages/ButtonWithIconPage";
 import TextBoxPage from "./components/pages/TextBoxPage";
 import ModalConfirmationPage from "./components/pages/ModalConfirmationPage";
 import TaskList from "./components/pages/TaskList";
@@ -29,10 +29,10 @@ function App() {
             <Route path="/" element={<GlobalLayout />}>
               <Route index element={<LoginPage />} />
               <Route
-                path="boton-con-icono-page"
+                path="button-with-icon-page"
                 element={
                   <PrivateRoute>
-                    <BotonConIconoPage />
+                    <ButtonWithIconPage />
                   </PrivateRoute>
                 }
               />

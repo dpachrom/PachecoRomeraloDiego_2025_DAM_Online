@@ -43,7 +43,7 @@ function GlobalLayout() {
             <Divider />
           </>
         )}
-        <ListItemButton component={Link} to="/boton-con-icono-page">
+        <ListItemButton component={Link} to="/button-with-icon-page">
           <ListItemText primary="Botón con Icono (Page)" />
         </ListItemButton>
         <Divider />
