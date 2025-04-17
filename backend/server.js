@@ -15,10 +15,12 @@ app.use(cors({
 // Routes import
 const authRoutes = require('./src/routers/authRoutes');
 const userRoutes = require('./src/routers/userRoutes');
+//const taskRoutes = require('./src/routers/taskRoutes');
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+//app.use('/api/tasks', taskRoutes);
 
 const PORT = process.env.PORT || 5000;
 
