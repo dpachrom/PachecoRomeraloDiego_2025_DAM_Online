@@ -3,14 +3,14 @@ import { List, Box } from "@mui/material";
 import Heading from "../atoms/Heading";
 import TaskItem from "../molecules/TaskItem";
 import TaskFilter from "../molecules/TaskFilter";
-import { getTasks, updateTaskStatus } from "../../services/taskService";
+import { getTasks, updateTaskStatus } from "../../services/TaskService";
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [showPending, setShowPending] = useState(false);
 
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchAllTasks = async () => {
       try {
         const data = await getTasks();
         setTasks(data);
@@ -19,7 +19,7 @@ const TaskList = () => {
       }
     };
 
-    fetchTasks();
+    fetchAllTasks();
   }, []);
 
   const handleToggle = async (id) => {
@@ -29,15 +29,17 @@ const TaskList = () => {
     try {
       const updated = await updateTaskStatus(id, !task.completed);
       setTasks((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, completed: updated.completed } : t))
+        prev.map((t) =>
+          t.id === id ? { ...t, completed: updated.completed } : t
+        )
       );
     } catch (error) {
-      console.error("Error al actualizar estado:", error);
+      console.error("Error al actualizar estado de tarea:", error);
     }
   };
 
   const filteredTasks = showPending
-    ? tasks.filter((task) => !task.completed)
+    ? tasks.filter((t) => !t.completed)
     : tasks;
 
   return (
