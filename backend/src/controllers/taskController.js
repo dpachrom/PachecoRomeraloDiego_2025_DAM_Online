@@ -11,12 +11,14 @@ const getTasks = async (req, res) => {
 
 const updateTask = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { completed } = req.body;
-    const updatedTask = await taskService.updateTaskStatus(id, completed);
-    res.json(updatedTask);
-  } catch (error) {
-    res.status(error.status || 500).json({ message: error.message });
+    const updated = await taskService.updateTask(
+      req.user.id,
+      req.params.id,
+      req.body
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message });
   }
 };
 

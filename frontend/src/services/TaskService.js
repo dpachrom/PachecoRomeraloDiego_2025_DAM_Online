@@ -11,9 +11,9 @@ export const createTask = async ({ title, description }) => {
   return response.data;
 };
 
-export const updateTaskStatus = async (id, completed) => {
-  const response = await api.patch(`/tasks/${id}`, { completed });
-  return response.data;
+export const updateTask = async (id, payload) => {
+  const { data } = await api.patch(`/tasks/${id}`, payload);
+  return data;
 };
 
 export const deleteTask = async (id) => {

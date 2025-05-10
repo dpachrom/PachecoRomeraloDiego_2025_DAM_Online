@@ -5,14 +5,12 @@ const getAllTasks = async () => {
   return await Task.findAll();
 };
 
-const updateTaskStatus = async (id, completed) => {
-  const task = await Task.findByPk(id);
+async function updateTask(userId, taskId, data) {
+  const task = await Task.findOne({ where: { id: taskId, userId } });
   if (!task) throw createError('Tarea no encontrada', 404);
-
-  task.completed = completed;
-  await task.save();
+  await task.update(data);
   return task;
-};
+}
 
 const createTask = async (userId, title, description) => {
   if (!title) throw createError('El título es obligatorio', 400);
@@ -31,7 +29,7 @@ async function removeTask(userId, taskId) {
 
 module.exports = {
   getAllTasks,
-  updateTaskStatus,
+  updateTask,
   createTask,
   removeTask,
 };
