@@ -10,7 +10,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 
 // Pages imports
-import UserCardPage from "./components/pages/UserCardPage";
+import CalendarPage from "./components/pages/CalendarPage";
+//import UserCardPage from "./components/pages/UserCardPage";
 import TaskList from "./components/pages/TaskList";
 import FormPage from "./components/pages/FormPage";
 import LoginPage from "./components/pages/LoginPage";
@@ -25,13 +26,21 @@ function App() {
             <Route path="/" element={<GlobalLayout />}>
               <Route index element={<LoginPage />} />
               <Route
+                path="calendar-page"
+                element={
+                  <PrivateRoute>
+                    <CalendarPage />
+                  </PrivateRoute>
+                }
+              />
+{/*               <Route
                 path="user-card-page"
                 element={
                   <PrivateRoute>
                     <UserCardPage />
                   </PrivateRoute>
                 }
-              />
+              /> */}
               <Route
                 path="task-list-page"
                 element={

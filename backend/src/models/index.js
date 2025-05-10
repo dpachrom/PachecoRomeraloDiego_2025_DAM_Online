@@ -1,4 +1,33 @@
+// src/models/index.js
 'use strict';
+
+const Sequelize = require('sequelize');
+const sequelize = require('../config/database');  // tu conexión única
+const db = {};
+
+// Importar modelos
+db.User  = require('./user');
+db.Task  = require('./task');
+db.Event = require('./event');
+
+// Asociaciones User ↔ Task
+db.User.hasMany(db.Task, { foreignKey: 'userId' });
+db.Task.belongsTo(db.User, { foreignKey: 'userId' });
+
+// Asociaciones User ↔ Event
+db.User.hasMany(db.Event, { foreignKey: 'userId' });
+db.Event.belongsTo(db.User, { foreignKey: 'userId' });
+
+// Exponer instancia y constructor
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
+
+
+
+
+/* 'use strict';
 
 const fs = require('fs');
 const path = require('path');
@@ -41,3 +70,4 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
+ */

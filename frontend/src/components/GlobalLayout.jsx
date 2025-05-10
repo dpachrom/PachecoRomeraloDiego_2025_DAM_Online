@@ -43,11 +43,13 @@ function GlobalLayout() {
             <Divider />
           </>
         )}
-
-        <ListItemButton component={Link} to="/user-card-page">
+        <ListItemButton component={Link} to="/calendar-page">
+          <ListItemText primary="Calendar (Page)" />
+        </ListItemButton>
+{/*         <ListItemButton component={Link} to="/user-card-page">
           <ListItemText primary="User card (Page)" />
         </ListItemButton>
-        <Divider />
+        <Divider /> */}
         <ListItemButton component={Link} to="/task-list-page">
           <ListItemText primary="Task list (Page)" />
         </ListItemButton>
