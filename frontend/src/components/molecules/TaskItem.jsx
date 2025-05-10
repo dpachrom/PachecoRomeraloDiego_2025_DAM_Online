@@ -1,13 +1,31 @@
 import React from "react";
-import { ListItem, Checkbox, ListItemText } from "@mui/material";
+import {
+  ListItem,
+  ListItemText,
+  Checkbox,
+  Typography,
+  Box,
+} from "@mui/material";
 
-const TaskItem = ({ task, onToggle }) => {
-  return (
-    <ListItem>
-      <Checkbox checked={task.completed} onChange={() => onToggle(task.id)} />
-      <ListItemText primary={task.text} />
-    </ListItem>
-  );
-};
+const TaskItem = ({ title, completed, onToggle }) => (
+  <ListItem
+    secondaryAction={
+      <Checkbox edge="end" checked={completed} onChange={onToggle} />
+    }
+  >
+    <ListItemText
+      primary={
+        <Typography
+          variant="subtitle1"
+          sx={{
+            textDecoration: completed ? "line-through" : "none",
+          }}
+        >
+          {title}
+        </Typography>
+      }
+    />
+  </ListItem>
+);
 
 export default TaskItem;

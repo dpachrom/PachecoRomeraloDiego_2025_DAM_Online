@@ -10,12 +10,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 
 // Pages imports
-import ButtonWithIconPage from "./components/pages/ButtonWithIconPage";
-import TextBoxPage from "./components/pages/TextBoxPage";
-import ModalConfirmationPage from "./components/pages/ModalConfirmationPage";
-import TaskList from "./components/pages/TaskList";
-import DashboardPage from "./components/pages/DashboardPage";
 import UserCardPage from "./components/pages/UserCardPage";
+import TaskList from "./components/pages/TaskList";
 import FormPage from "./components/pages/FormPage";
 import LoginPage from "./components/pages/LoginPage";
 import ProfilePage from "./components/pages/ProfilePage";
@@ -29,26 +25,10 @@ function App() {
             <Route path="/" element={<GlobalLayout />}>
               <Route index element={<LoginPage />} />
               <Route
-                path="button-with-icon-page"
+                path="user-card-page"
                 element={
                   <PrivateRoute>
-                    <ButtonWithIconPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="text-box-page"
-                element={
-                  <PrivateRoute>
-                    <TextBoxPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="modal-confirmation-page"
-                element={
-                  <PrivateRoute>
-                    <ModalConfirmationPage />
+                    <UserCardPage />
                   </PrivateRoute>
                 }
               />
@@ -57,22 +37,6 @@ function App() {
                 element={
                   <PrivateRoute>
                     <TaskList />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="dashboard-page"
-                element={
-                  <PrivateRoute>
-                    <DashboardPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="user-card-page"
-                element={
-                  <PrivateRoute>
-                    <UserCardPage />
                   </PrivateRoute>
                 }
               />

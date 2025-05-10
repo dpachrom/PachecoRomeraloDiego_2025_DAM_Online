@@ -9,7 +9,7 @@ const ProfilePage = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login", { replace: true });
+    navigate("/user-card-page", { replace: true });
   };
 
   if (!user || !user.isAuthenticated) {

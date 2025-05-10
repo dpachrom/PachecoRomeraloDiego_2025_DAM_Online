@@ -34,7 +34,7 @@ function GlobalLayout() {
         {/* Mostrar "Login" solo si no hay usuario autenticado */}
         {(!user || !user.isAuthenticated) && (
           <>
-            <ListItemButton component={Link} to="/login-page">
+            <ListItemButton component={Link} to="/">
               <ListItemText
                 primary="Login (Page)"
                 sx={{ textAlign: "center", backgroundColor: "#1976d2" }}
@@ -43,28 +43,13 @@ function GlobalLayout() {
             <Divider />
           </>
         )}
-        <ListItemButton component={Link} to="/button-with-icon-page">
-          <ListItemText primary="Botón con Icono (Page)" />
-        </ListItemButton>
-        <Divider />
-        <ListItemButton component={Link} to="/text-box-page">
-          <ListItemText primary="Text box (Page)" />
-        </ListItemButton>
-        <Divider />
+
         <ListItemButton component={Link} to="/user-card-page">
           <ListItemText primary="User card (Page)" />
         </ListItemButton>
         <Divider />
-        <ListItemButton component={Link} to="/modal-confirmation-page">
-          <ListItemText primary="Modal (Page)" />
-        </ListItemButton>
-        <Divider />
         <ListItemButton component={Link} to="/task-list-page">
           <ListItemText primary="Task list (Page)" />
-        </ListItemButton>
-        <Divider />
-        <ListItemButton component={Link} to="/dashboard-page">
-          <ListItemText primary="Dashboard (Page)" />
         </ListItemButton>
         <Divider />
         <ListItemButton component={Link} to="/form-page">

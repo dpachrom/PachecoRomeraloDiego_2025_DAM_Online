@@ -1,26 +1,27 @@
+version: '3.8'
+
 services:
   backend:
+    container_name: projectdpr_backend
     build: ./backend
     ports:
-      - "3000:3000"
-    
-    container_name: challenge_backend
-
+      - "5000:5000"
     env_file:
       - .env
-
+      
     depends_on:
-      - postgres
-
+      - db
     networks:
-      - challenge_network
+      - projectdpr_network
     volumes:
       - ./backend:/app
+      - /app/node_modules
 
-  postgres:
+  db:
+    container_name: projectdpr_db
     image: postgres:17.4-alpine3.21
     restart: always
-
+    
     env_file:
       - .env
 
@@ -32,27 +33,23 @@ services:
       - "5455:5432"
 
     networks:
-      - challenge_network
-
-    container_name: challenge_db
-
-
+      - projectdpr_network
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    
+      - projectdpr_postgres_data:/var/lib/postgresql/data
 
   frontend:
+    container_name: projectdpr_frontend
     build: ./frontend
     ports:
-      - "3000:3000"
+      - "3001:80"
     depends_on:
       - backend
     networks:
-      - challenge_network
+      - projectdpr_network
 
 volumes:
-  postgres_data:
+  projectdpr_postgres_data:
 
 networks:
-  challenge_network:
+  projectdpr_network:
     driver: bridge
