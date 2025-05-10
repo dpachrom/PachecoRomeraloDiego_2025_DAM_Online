@@ -1,16 +1,18 @@
+// src/business/eventService.js
 const Event = require("../models/event");
-const createError = require("../utils/createError");
 
-const getEventsForUser = async (userId) => {
+async function getEventsForUser(userId) {
   return await Event.findAll({
     where: { userId },
     order: [["start", "ASC"]],
   });
-};
+}
 
-const createEvent = async (userId, data) => {
-  // data: { title, start, end }
-  return await Event.create({ ...data, userId });
-};
+async function createEventForUser(userId, { title, start, end }) {
+  return await Event.create({ userId, title, start, end });
+}
 
-module.exports = { getEventsForUser, createEvent };
+module.exports = {
+  getEventsForUser,
+  createEventForUser,
+};

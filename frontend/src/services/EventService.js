@@ -5,16 +5,17 @@ import api from "../api";
  * Obtiene todos los eventos del usuario autenticado.
  * @returns {Promise<Array<{ id: number, title: string, start: string, end: string }>>}
  */
+// src/services/EventService.js
 export const getEvents = async () => {
-  const response = await api.get("/events");
-  return response.data;
+  const { data } = await api.get("/events");
+  // aquí convertimos cada start/end a Date
+  return data.map((ev) => ({
+    ...ev,
+    start: new Date(ev.start),
+    end:   new Date(ev.end),
+  }));
 };
 
-/**
- * Crea un nuevo evento para el usuario autenticado.
- * @param {{ title: string, start: Date, end: Date }} payload
- * @returns {Promise<{ id: number, title: string, start: string, end: string }>}
- */
 export const createEvent = async (payload) => {
   const response = await api.post("/events", {
     title: payload.title,
@@ -23,3 +24,5 @@ export const createEvent = async (payload) => {
   });
   return response.data;
 };
+
+
