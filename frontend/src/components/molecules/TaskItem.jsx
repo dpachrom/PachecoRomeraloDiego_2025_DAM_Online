@@ -4,13 +4,19 @@ import {
   ListItemText,
   Checkbox,
   Typography,
-  Box,
+  IconButton,
 } from "@mui/material";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-const TaskItem = ({ title, completed, onToggle }) => (
+const TaskItem = ({ title, completed, onToggle, onDelete }) => (
   <ListItem
     secondaryAction={
-      <Checkbox edge="end" checked={completed} onChange={onToggle} />
+      <>
+        <IconButton edge="end" onClick={onDelete}>
+          <DeleteOutlineIcon />
+        </IconButton>
+        <Checkbox edge="end" checked={completed} onChange={onToggle} />
+      </>
     }
   >
     <ListItemText

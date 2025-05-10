@@ -31,8 +31,18 @@ const createTask = async (req, res) => {
   }
 };
 
+const deleteTask = async (req, res) => {
+  try {
+    await taskService.removeTask(req.user.id, req.params.id);
+    res.status(204).end();
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getTasks,
   updateTask,
   createTask,
+  deleteTask,
 };

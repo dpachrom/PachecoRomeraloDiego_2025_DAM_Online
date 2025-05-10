@@ -20,8 +20,18 @@ const createTask = async (userId, title, description) => {
   return task;
 };
 
+async function removeTask(userId, taskId) {
+  const deletedCount = await Task.destroy({
+    where: { id: taskId, userId }
+  });
+  if (!deletedCount) {
+    throw createError('Tarea no encontrada o no autorizada', 404);
+  }
+}
+
 module.exports = {
   getAllTasks,
   updateTaskStatus,
   createTask,
+  removeTask,
 };

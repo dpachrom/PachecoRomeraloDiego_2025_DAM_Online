@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import { loginRequest, getMe } from "../services/AuthService";
+import { updateProfile } from "../services/UserService";
 
 export const AuthContext = createContext();
 
@@ -53,8 +54,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+ const updateUser = useCallback(
+   async (payload) => {
+     const updated = await updateProfile(payload);
+     setUser({ ...updated, isAuthenticated: true });
+     return updated;
+   },
+   []
+ );
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout }}>
+    <AuthContext.Provider 
+    value={{ user, token, loading, login, logout, updateUser }}
+    >  
       {children}
     </AuthContext.Provider>
   );

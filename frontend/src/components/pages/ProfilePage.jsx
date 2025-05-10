@@ -1,26 +1,49 @@
+// src/components/pages/ProfilePage.jsx
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
-import ProfileCard from "../molecules/ProfileCard";
+import ProfileForm from "../molecules/ProfileForm";
+import { Box, Typography, Snackbar, Alert } from "@mui/material";
 
-const ProfilePage = () => {
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+export default function ProfilePage() {
+  const { user, updateUser, logout } = useContext(AuthContext);
+  const [snackbar, setSnackbar] = React.useState(null);
+
+  if (!user) return null;
 
   const handleLogout = () => {
     logout();
-    navigate("/user-card-page", { replace: true });
   };
 
-  if (!user || !user.isAuthenticated) {
-    return <div>No estás autenticado. Por favor, inicia sesión.</div>;
-  }
+  const handleSubmit = async (data) => {
+    try {
+      await updateUser(data);
+      setSnackbar({ severity: "success", message: "Perfil actualizado" });
+    } catch (err) {
+      setSnackbar({ severity: "error", message: err.message });
+    }
+  };
 
   return (
-    <div>
-      <ProfileCard user={user} onLogout={handleLogout} />
-    </div>
-  );
-};
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" sx={{ mb: 2 }}>
+        Mi perfil
+      </Typography>
 
-export default ProfilePage;
+      <ProfileForm
+        defaultValues={{ name: user.name, email: user.email, password: "" }}
+        onSubmit={handleSubmit}
+        onLogout={handleLogout}
+      />
+
+      {snackbar && (
+        <Snackbar
+          open
+          autoHideDuration={3000}
+          onClose={() => setSnackbar(null)}
+        >
+          <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
+        </Snackbar>
+      )}
+    </Box>
+  );
+}

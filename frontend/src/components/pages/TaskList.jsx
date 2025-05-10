@@ -7,6 +7,7 @@ import {
   getTasks,
   updateTaskStatus,
   createTask,
+  deleteTask
 } from "../../services/TaskService";
 
 const TaskList = () => {
@@ -23,6 +24,12 @@ const TaskList = () => {
       }
     })();
   }, []);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("¿Eliminar esta tarea?")) return;
+    await deleteTask(id);
+    setTasks(tasks.filter(t => t.id !== id));
+  };
 
   const handleToggle = async (id) => {
     const task = tasks.find((t) => t.id === id);
@@ -74,6 +81,7 @@ const TaskList = () => {
             title={task.title}
             completed={task.completed}
             onToggle={() => handleToggle(task.id)}
+            onDelete={() => handleDelete(task.id)}
           />
         ))}
       </List>
