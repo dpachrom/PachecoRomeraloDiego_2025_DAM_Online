@@ -32,14 +32,6 @@ function App() {
                   </PrivateRoute>
                 }
               />
-{/*               <Route
-                path="user-card-page"
-                element={
-                  <PrivateRoute>
-                    <UserCardPage />
-                  </PrivateRoute>
-                }
-              /> */}
               <Route
                 path="task-list-page"
                 element={
