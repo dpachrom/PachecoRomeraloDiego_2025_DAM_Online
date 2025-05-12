@@ -12,7 +12,7 @@ const LoginPage = () => {
   const handleLogin = async (data) => {
     try {
       await login(data.email, data.password);
-      navigate("/button-with-icon-page", { replace: true });
+      navigate("/calendar-page", { replace: true });
     } catch (error) {
       console.error("Error en login:", error);
     }

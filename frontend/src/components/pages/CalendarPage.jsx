@@ -1,18 +1,14 @@
 // src/components/pages/CalendarPage.jsx
 
 import React, { useState, useEffect } from "react";
-import {
-  Calendar,
-  dateFnsLocalizer,
-} from "react-big-calendar";
-import {
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-} from "date-fns";
-import es from "date-fns/locale/es";
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { format, parse, startOfWeek, getDay } from "date-fns";
+import es from "date-fns/locale/es";
+import "react-datepicker/dist/react-datepicker.css";
+import ReactDatePicker, { registerLocale } from "react-datepicker";
+import esLocale from "date-fns/locale/es";
+
 import {
   Box,
   Typography,
@@ -22,76 +18,140 @@ import {
   DialogActions,
   Button,
   TextField,
+  Divider,
+  Snackbar,
+  Alert,
 } from "@mui/material";
-import { getEvents, createEvent } from "../../services/EventService"; // ej.
 
+import {
+  getEvents,
+  createEvent,
+  updateEvent,
+  deleteEvent,
+} from "../../services/EventService";
+
+// registra el locale
+registerLocale("es", esLocale);
+
+// localizer para react-big-calendar
 const locales = { es };
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek: (date, culture) =>
-    startOfWeek(date, { locale: locales[culture] }),
-  getDay,
-  locales,
-});
+const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales });
 
 export default function CalendarPage() {
-  // Estado de la lista de eventos
   const [events, setEvents] = useState([]);
-
-  // Fecha y vista actuales
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState("month");
 
-  // Diálogo para crear evento
+  // diálogo de creación / edición
   const [dialog, setDialog] = useState({
     open: false,
-    slotInfo: null,
+    isEdit: false,
+    id: null,
     title: "",
+    start: null,
+    end: null,
   });
 
-  // Carga inicial de eventos (podrías usar /api/events)
+  // diálogo de detalle
+  const [detailDialog, setDetailDialog] = useState({
+    open: false,
+    event: null,
+  });
+
+  // snackbar
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const closeSnackbar = () => setSnackbar(s => ({ ...s, open: false }));
+
+  // carga inicial
   useEffect(() => {
     (async () => {
-      const data = await getEvents(); // debe devolver [{id,title,start,end},…]
-      setEvents(data);
+      try {
+        const evs = await getEvents();
+        setEvents(evs);
+      } catch (err) {
+        setSnackbar({ open: true, message: "Error al cargar eventos", severity: "error" });
+      }
     })();
   }, []);
 
-  // Navegación (prev/next/today)
-  const handleNavigate = (date) => {
-    setCurrentDate(date);
-    // Si quisieras, podrías recargar eventos para ese mes:
-    // fetchEvents({ start: inicioMes(date), end: finMes(date) })
+  // navegación y vista
+  const handleNavigate = date => setCurrentDate(date);
+  const handleView = view => setCurrentView(view);
+
+  // arrastrar → actualizar fechas
+  const handleEventDrop = ({ event, start, end }) => {
+    updateEvent(event.id, { start, end })
+      .then(updated => {
+        setEvents(prev => prev.map(e => (e.id === updated.id ? updated : e)));
+        setSnackbar({ open: true, message: "Evento actualizado", severity: "success" });
+      })
+      .catch(() =>
+        setSnackbar({ open: true, message: "Error al actualizar evento", severity: "error" })
+      );
   };
 
-  // Cambio de vista (month, week, day, agenda)
-  const handleView = (view) => {
-    setCurrentView(view);
-  };
+  // slot select → abrir creación
+  const handleSelectSlot = ({ start, end }) =>
+    setDialog({ open: true, isEdit: false, id: null, title: "", start, end });
 
-  // Al hacer clic sobre un evento
-  const handleSelectEvent = (event) => {
-    alert(`Evento: ${event.title}\nDesde: ${event.start}\nHasta: ${event.end}`);
-  };
+  // click evento → detalle
+  const handleSelectEvent = ev =>
+    setDetailDialog({ open: true, event: ev });
 
-  // Al hacer drag-and-select sobre huecos
-  const handleSelectSlot = (slotInfo) => {
-    setDialog({ open: true, slotInfo, title: "" });
-  };
-
-  // Guardar evento nuevo
+  // guardar / actualizar
   const handleDialogSave = async () => {
-    const { slotInfo, title } = dialog;
-    const newEv = {
-      title,
-      start: slotInfo.start,
-      end: slotInfo.end,
-    };
-    // Llamada al backend
-    const created = await createEvent(newEv);
-    setEvents((prev) => [...prev, created]);
-    setDialog({ open: false, slotInfo: null, title: "" });
+    const { isEdit, id, title, start, end } = dialog;
+    try {
+      const saved = isEdit
+        ? await updateEvent(id, { title, start, end })
+        : await createEvent({ title, start, end });
+
+      setEvents(prev =>
+        isEdit
+          ? prev.map(e => (e.id === saved.id ? saved : e))
+          : [...prev, saved]
+      );
+      setSnackbar({
+        open: true,
+        message: isEdit ? "Evento actualizado" : "Evento creado",
+        severity: "success",
+      });
+      setDialog({ open: false, isEdit: false, id: null, title: "", start: null, end: null });
+    } catch {
+      setSnackbar({ open: true, message: "Error al guardar evento", severity: "error" });
+    }
+  };
+
+  // borrar desde detalle
+  const handleDelete = () => {
+    const { event } = detailDialog;
+    deleteEvent(event.id)
+      .then(() => {
+        setEvents(prev => prev.filter(e => e.id !== event.id));
+        setSnackbar({ open: true, message: "Evento borrado", severity: "success" });
+        setDetailDialog({ open: false, event: null });
+      })
+      .catch(() =>
+        setSnackbar({ open: true, message: "Error al borrar evento", severity: "error" })
+      );
+  };
+
+  // editar desde detalle
+  const handleEditFromDetail = () => {
+    const { event } = detailDialog;
+    setDialog({
+      open: true,
+      isEdit: true,
+      id: event.id,
+      title: event.title,
+      start: event.start,
+      end: event.end,
+    });
+    setDetailDialog({ open: false, event: null });
   };
 
   return (
@@ -109,6 +169,8 @@ export default function CalendarPage() {
         view={currentView}
         onNavigate={handleNavigate}
         onView={handleView}
+        draggable
+        onEventDrop={handleEventDrop}
         onSelectEvent={handleSelectEvent}
         selectable
         onSelectSlot={handleSelectSlot}
@@ -126,38 +188,116 @@ export default function CalendarPage() {
           time: "Hora",
           event: "Evento",
           noEventsInRange: "No hay eventos",
-          showMore: (total) => `+${total} más`,
+          showMore: total => `+${total} más`,
         }}
       />
 
-      {/* Dialog para crear nuevo evento */}
-      <Dialog open={dialog.open} onClose={() => setDialog({ ...dialog, open: false })}>
-        <DialogTitle>Nuevo evento</DialogTitle>
+      {/* Detalle */}
+      <Dialog
+        open={detailDialog.open}
+        onClose={() => setDetailDialog({ open: false, event: null })}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>Detalle del evento</DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="h6">{detailDialog.event?.title}</Typography>
+          <Typography sx={{ mt: 1 }}>
+            <strong>Desde:</strong> {detailDialog.event?.start.toLocaleString()}
+          </Typography>
+          <Typography>
+            <strong>Hasta:</strong> {detailDialog.event?.end.toLocaleString()}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button color="error" onClick={handleDelete}>Borrar</Button>
+          <Divider orientation="vertical" flexItem />
+          <Button onClick={handleEditFromDetail}>Editar</Button>
+          <Button onClick={() => setDetailDialog({ open: false, event: null })}>
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Creación / Edición */}
+      <Dialog
+        open={dialog.open}
+        onClose={() => setDialog(d => ({ ...d, open: false }))}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>{dialog.isEdit ? "Editar evento" : "Nuevo evento"}</DialogTitle>
         <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
           <TextField
             label="Título"
             value={dialog.title}
-            onChange={(e) => setDialog({ ...dialog, title: e.target.value })}
+            onChange={e => setDialog(d => ({ ...d, title: e.target.value }))}
             fullWidth
           />
-          <Typography variant="body2">
-            {`Desde: ${dialog.slotInfo?.start.toLocaleString()}`}
-          </Typography>
-          <Typography variant="body2">
-            {`Hasta: ${dialog.slotInfo?.end.toLocaleString()}`}
-          </Typography>
+
+          <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="body2">Desde:</Typography>
+              <ReactDatePicker
+                selected={dialog.start}
+                onChange={date => setDialog(d => ({ ...d, start: date }))}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="Pp"
+                locale="es"
+                customInput={<TextField fullWidth />}
+                withPortal
+                popperPlacement="bottom-start"
+                popperModifiers={[{ name: "preventOverflow", options: { altAxis: true, tether: false } }]}
+              />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="body2">Hasta:</Typography>
+              <ReactDatePicker
+                selected={dialog.end}
+                onChange={date => setDialog(d => ({ ...d, end: date }))}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="Pp"
+                locale="es"
+                customInput={<TextField fullWidth />}
+                withPortal
+                popperPlacement="bottom-start"
+                popperModifiers={[{ name: "preventOverflow", options: { altAxis: true, tether: false } }]}
+              />
+            </Box>
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialog({ ...dialog, open: false })}>Cancelar</Button>
+          <Button onClick={() => setDialog(d => ({ ...d, open: false }))}>Cancelar</Button>
           <Button
             variant="contained"
-            disabled={!dialog.title.trim()}
+            disabled={
+              !dialog.title.trim() ||
+              !dialog.start ||
+              !dialog.end ||
+              dialog.end <= dialog.start
+            }
             onClick={handleDialogSave}
           >
-            Guardar
+            {dialog.isEdit ? "Actualizar" : "Guardar"}
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* ——— SNACKBAR ——— */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={closeSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={closeSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

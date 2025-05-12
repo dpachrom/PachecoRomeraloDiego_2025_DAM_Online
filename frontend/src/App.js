@@ -11,7 +11,6 @@ import PrivateRoute from "./components/PrivateRoute";
 
 // Pages imports
 import CalendarPage from "./components/pages/CalendarPage";
-//import UserCardPage from "./components/pages/UserCardPage";
 import TaskList from "./components/pages/TaskList";
 import FormPage from "./components/pages/FormPage";
 import LoginPage from "./components/pages/LoginPage";

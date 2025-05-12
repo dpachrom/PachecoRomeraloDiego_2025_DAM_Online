@@ -18,6 +18,7 @@ const userRoutes = require('./src/routers/userRoutes');
 const taskRoutes = require('./src/routers/taskRoutes');
 const eventRoutes = require("./src/routers/eventRoutes");
 
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
