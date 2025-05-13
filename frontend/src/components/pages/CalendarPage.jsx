@@ -35,7 +35,13 @@ registerLocale("es", esLocale);
 
 // localizer para react-big-calendar
 const locales = { es };
-const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales });
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+});
 
 export default function CalendarPage() {
   const [events, setEvents] = useState([]);
@@ -64,7 +70,7 @@ export default function CalendarPage() {
     message: "",
     severity: "success",
   });
-  const closeSnackbar = () => setSnackbar(s => ({ ...s, open: false }));
+  const closeSnackbar = () => setSnackbar((s) => ({ ...s, open: false }));
 
   // carga inicial
   useEffect(() => {
@@ -73,24 +79,38 @@ export default function CalendarPage() {
         const evs = await getEvents();
         setEvents(evs);
       } catch (err) {
-        setSnackbar({ open: true, message: "Error al cargar eventos", severity: "error" });
+        setSnackbar({
+          open: true,
+          message: "Error al cargar eventos",
+          severity: "error",
+        });
       }
     })();
   }, []);
 
   // navegación y vista
-  const handleNavigate = date => setCurrentDate(date);
-  const handleView = view => setCurrentView(view);
+  const handleNavigate = (date) => setCurrentDate(date);
+  const handleView = (view) => setCurrentView(view);
 
   // arrastrar → actualizar fechas
   const handleEventDrop = ({ event, start, end }) => {
     updateEvent(event.id, { start, end })
-      .then(updated => {
-        setEvents(prev => prev.map(e => (e.id === updated.id ? updated : e)));
-        setSnackbar({ open: true, message: "Evento actualizado", severity: "success" });
+      .then((updated) => {
+        setEvents((prev) =>
+          prev.map((e) => (e.id === updated.id ? updated : e))
+        );
+        setSnackbar({
+          open: true,
+          message: "Evento actualizado",
+          severity: "success",
+        });
       })
       .catch(() =>
-        setSnackbar({ open: true, message: "Error al actualizar evento", severity: "error" })
+        setSnackbar({
+          open: true,
+          message: "Error al actualizar evento",
+          severity: "error",
+        })
       );
   };
 
@@ -99,8 +119,7 @@ export default function CalendarPage() {
     setDialog({ open: true, isEdit: false, id: null, title: "", start, end });
 
   // click evento → detalle
-  const handleSelectEvent = ev =>
-    setDetailDialog({ open: true, event: ev });
+  const handleSelectEvent = (ev) => setDetailDialog({ open: true, event: ev });
 
   // guardar / actualizar
   const handleDialogSave = async () => {
@@ -110,9 +129,9 @@ export default function CalendarPage() {
         ? await updateEvent(id, { title, start, end })
         : await createEvent({ title, start, end });
 
-      setEvents(prev =>
+      setEvents((prev) =>
         isEdit
-          ? prev.map(e => (e.id === saved.id ? saved : e))
+          ? prev.map((e) => (e.id === saved.id ? saved : e))
           : [...prev, saved]
       );
       setSnackbar({
@@ -120,9 +139,20 @@ export default function CalendarPage() {
         message: isEdit ? "Evento actualizado" : "Evento creado",
         severity: "success",
       });
-      setDialog({ open: false, isEdit: false, id: null, title: "", start: null, end: null });
+      setDialog({
+        open: false,
+        isEdit: false,
+        id: null,
+        title: "",
+        start: null,
+        end: null,
+      });
     } catch {
-      setSnackbar({ open: true, message: "Error al guardar evento", severity: "error" });
+      setSnackbar({
+        open: true,
+        message: "Error al guardar evento",
+        severity: "error",
+      });
     }
   };
 
@@ -131,12 +161,20 @@ export default function CalendarPage() {
     const { event } = detailDialog;
     deleteEvent(event.id)
       .then(() => {
-        setEvents(prev => prev.filter(e => e.id !== event.id));
-        setSnackbar({ open: true, message: "Evento borrado", severity: "success" });
+        setEvents((prev) => prev.filter((e) => e.id !== event.id));
+        setSnackbar({
+          open: true,
+          message: "Evento borrado",
+          severity: "success",
+        });
         setDetailDialog({ open: false, event: null });
       })
       .catch(() =>
-        setSnackbar({ open: true, message: "Error al borrar evento", severity: "error" })
+        setSnackbar({
+          open: true,
+          message: "Error al borrar evento",
+          severity: "error",
+        })
       );
   };
 
@@ -174,7 +212,7 @@ export default function CalendarPage() {
         onSelectEvent={handleSelectEvent}
         selectable
         onSelectSlot={handleSelectSlot}
-        style={{ height: 600 }}
+        style={{ height: 1080 }}
         culture="es"
         messages={{
           next: "Sig.",
@@ -188,7 +226,7 @@ export default function CalendarPage() {
           time: "Hora",
           event: "Evento",
           noEventsInRange: "No hay eventos",
-          showMore: total => `+${total} más`,
+          showMore: (total) => `+${total} más`,
         }}
       />
 
@@ -210,7 +248,9 @@ export default function CalendarPage() {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button color="error" onClick={handleDelete}>Borrar</Button>
+          <Button color="error" onClick={handleDelete}>
+            Borrar
+          </Button>
           <Divider orientation="vertical" flexItem />
           <Button onClick={handleEditFromDetail}>Editar</Button>
           <Button onClick={() => setDetailDialog({ open: false, event: null })}>
@@ -222,16 +262,22 @@ export default function CalendarPage() {
       {/* Creación / Edición */}
       <Dialog
         open={dialog.open}
-        onClose={() => setDialog(d => ({ ...d, open: false }))}
+        onClose={() => setDialog((d) => ({ ...d, open: false }))}
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>{dialog.isEdit ? "Editar evento" : "Nuevo evento"}</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+        <DialogTitle>
+          {dialog.isEdit ? "Editar evento" : "Nuevo evento"}
+        </DialogTitle>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+        >
           <TextField
             label="Título"
             value={dialog.title}
-            onChange={e => setDialog(d => ({ ...d, title: e.target.value }))}
+            onChange={(e) =>
+              setDialog((d) => ({ ...d, title: e.target.value }))
+            }
             fullWidth
           />
 
@@ -240,7 +286,7 @@ export default function CalendarPage() {
               <Typography variant="body2">Desde:</Typography>
               <ReactDatePicker
                 selected={dialog.start}
-                onChange={date => setDialog(d => ({ ...d, start: date }))}
+                onChange={(date) => setDialog((d) => ({ ...d, start: date }))}
                 showTimeSelect
                 timeFormat="HH:mm"
                 timeIntervals={15}
@@ -249,14 +295,19 @@ export default function CalendarPage() {
                 customInput={<TextField fullWidth />}
                 withPortal
                 popperPlacement="bottom-start"
-                popperModifiers={[{ name: "preventOverflow", options: { altAxis: true, tether: false } }]}
+                popperModifiers={[
+                  {
+                    name: "preventOverflow",
+                    options: { altAxis: true, tether: false },
+                  },
+                ]}
               />
             </Box>
             <Box sx={{ flex: 1 }}>
               <Typography variant="body2">Hasta:</Typography>
               <ReactDatePicker
                 selected={dialog.end}
-                onChange={date => setDialog(d => ({ ...d, end: date }))}
+                onChange={(date) => setDialog((d) => ({ ...d, end: date }))}
                 showTimeSelect
                 timeFormat="HH:mm"
                 timeIntervals={15}
@@ -265,13 +316,20 @@ export default function CalendarPage() {
                 customInput={<TextField fullWidth />}
                 withPortal
                 popperPlacement="bottom-start"
-                popperModifiers={[{ name: "preventOverflow", options: { altAxis: true, tether: false } }]}
+                popperModifiers={[
+                  {
+                    name: "preventOverflow",
+                    options: { altAxis: true, tether: false },
+                  },
+                ]}
               />
             </Box>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialog(d => ({ ...d, open: false }))}>Cancelar</Button>
+          <Button onClick={() => setDialog((d) => ({ ...d, open: false }))}>
+            Cancelar
+          </Button>
           <Button
             variant="contained"
             disabled={
@@ -294,7 +352,11 @@ export default function CalendarPage() {
         onClose={closeSnackbar}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert onClose={closeSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
+        <Alert
+          onClose={closeSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>

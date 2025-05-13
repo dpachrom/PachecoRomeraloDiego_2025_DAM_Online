@@ -112,7 +112,7 @@ function GlobalLayout() {
           flexGrow: 1,
           p: 3,
           mt: 6,
-          ml: { sm: 120 },
+          ml: { sm: 30 },
           display: "flex",
           justifyContent: "center",
           alignItems: "flex-start",
@@ -120,7 +120,7 @@ function GlobalLayout() {
           boxSizing: "border-box",
         }}
       >
-        <Box sx={{ width: "90%", maxWidth: "1200px" }}>
+        <Box sx={{ width: "90%",  }}>
           <Outlet />
         </Box>
       </Box>
