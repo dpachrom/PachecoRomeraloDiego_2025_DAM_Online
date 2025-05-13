@@ -11,8 +11,6 @@ import {
   useMediaQuery,
   Divider,
   Toolbar,
-  Grid2,
-  Container
 } from "@mui/material";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { AuthContext } from "../contexts/AuthContext";
