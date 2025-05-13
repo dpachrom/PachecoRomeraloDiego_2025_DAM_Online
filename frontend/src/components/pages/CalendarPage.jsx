@@ -11,16 +11,19 @@ import esLocale from "date-fns/locale/es";
 
 import {
   Box,
+  Button,
+  ButtonGroup,
   Typography,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   TextField,
   Divider,
   Snackbar,
   Alert,
+  useTheme,
+  GlobalStyles,
 } from "@mui/material";
 
 import {
@@ -43,7 +46,39 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
+// Toolbar personalizado con MUI
+function CustomToolbar({ localizer, label, onNavigate, onView, view }) {
+  const theme = useTheme();
+  return (
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      mb={2}
+    >
+      <ButtonGroup variant="outlined" size="small">
+        <Button onClick={() => onNavigate("TODAY")}>Hoy</Button>
+        <Button onClick={() => onNavigate("PREV")}>Ant.</Button>
+        <Button onClick={() => onNavigate("NEXT")}>Sig.</Button>
+      </ButtonGroup>
+      <Typography variant="h6">{label}</Typography>
+      <ButtonGroup variant="outlined" size="small">
+        {["month", "week", "day", "agenda"].map((v) => (
+          <Button
+            key={v}
+            onClick={() => onView(v)}
+            variant={view === v ? "contained" : "outlined"}
+          >
+            {v.charAt(0).toUpperCase() + v.slice(1)}
+          </Button>
+        ))}
+      </ButtonGroup>
+    </Box>
+  );
+}
+
 export default function CalendarPage() {
+  const theme = useTheme();
   const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState("month");
@@ -70,7 +105,8 @@ export default function CalendarPage() {
     message: "",
     severity: "success",
   });
-  const closeSnackbar = () => setSnackbar((s) => ({ ...s, open: false }));
+  const closeSnackbar = () =>
+    setSnackbar((s) => ({ ...s, open: false }));
 
   // carga inicial
   useEffect(() => {
@@ -92,34 +128,13 @@ export default function CalendarPage() {
   const handleNavigate = (date) => setCurrentDate(date);
   const handleView = (view) => setCurrentView(view);
 
-  // arrastrar → actualizar fechas
-  const handleEventDrop = ({ event, start, end }) => {
-    updateEvent(event.id, { start, end })
-      .then((updated) => {
-        setEvents((prev) =>
-          prev.map((e) => (e.id === updated.id ? updated : e))
-        );
-        setSnackbar({
-          open: true,
-          message: "Evento actualizado",
-          severity: "success",
-        });
-      })
-      .catch(() =>
-        setSnackbar({
-          open: true,
-          message: "Error al actualizar evento",
-          severity: "error",
-        })
-      );
-  };
-
   // slot select → abrir creación
   const handleSelectSlot = ({ start, end }) =>
     setDialog({ open: true, isEdit: false, id: null, title: "", start, end });
 
   // click evento → detalle
-  const handleSelectEvent = (ev) => setDetailDialog({ open: true, event: ev });
+  const handleSelectEvent = (ev) =>
+    setDetailDialog({ open: true, event: ev });
 
   // guardar / actualizar
   const handleDialogSave = async () => {
@@ -161,7 +176,9 @@ export default function CalendarPage() {
     const { event } = detailDialog;
     deleteEvent(event.id)
       .then(() => {
-        setEvents((prev) => prev.filter((e) => e.id !== event.id));
+        setEvents((prev) =>
+          prev.filter((e) => e.id !== event.id)
+        );
         setSnackbar({
           open: true,
           message: "Evento borrado",
@@ -193,10 +210,21 @@ export default function CalendarPage() {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-{/*       <Typography variant="h4" sx={{ mb: 2 }}>
-        Calendario
-      </Typography> */}
+    <Box sx={{ height: "100%", p: 0 }}>
+      {/* inject global hover/toolbar styles */}
+      <GlobalStyles
+        styles={{
+          // hover en celdas vacías
+          ".rbc-day-slot .rbc-time-slot:hover": {
+            backgroundColor: theme.palette.action.hover,
+          },
+          // botones del toolbar
+          ".rbc-toolbar button": {
+            color: theme.palette.text.primary + " !important",
+            borderColor: theme.palette.divider + " !important",
+          },
+        }}
+      />
 
       <Calendar
         localizer={localizer}
@@ -207,13 +235,19 @@ export default function CalendarPage() {
         view={currentView}
         onNavigate={handleNavigate}
         onView={handleView}
-        draggable
-        onEventDrop={handleEventDrop}
-        onSelectEvent={handleSelectEvent}
         selectable
         onSelectSlot={handleSelectSlot}
-        style={{ height: 1080 }}
+        onSelectEvent={handleSelectEvent}
+        style={{ height: "calc(90vh - 64px)" }}
         culture="es"
+        components={{
+          toolbar: (toolbarProps) => (
+            <CustomToolbar
+              {...toolbarProps}
+              view={currentView}
+            />
+          ),
+        }}
         messages={{
           next: "Sig.",
           previous: "Ant.",
@@ -239,12 +273,16 @@ export default function CalendarPage() {
       >
         <DialogTitle>Detalle del evento</DialogTitle>
         <DialogContent dividers>
-          <Typography variant="h6">{detailDialog.event?.title}</Typography>
+          <Typography variant="h6">
+            {detailDialog.event?.title}
+          </Typography>
           <Typography sx={{ mt: 1 }}>
-            <strong>Desde:</strong> {detailDialog.event?.start.toLocaleString()}
+            <strong>Desde:</strong>{" "}
+            {detailDialog.event?.start.toLocaleString()}
           </Typography>
           <Typography>
-            <strong>Hasta:</strong> {detailDialog.event?.end.toLocaleString()}
+            <strong>Hasta:</strong>{" "}
+            {detailDialog.event?.end.toLocaleString()}
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -253,7 +291,11 @@ export default function CalendarPage() {
           </Button>
           <Divider orientation="vertical" flexItem />
           <Button onClick={handleEditFromDetail}>Editar</Button>
-          <Button onClick={() => setDetailDialog({ open: false, event: null })}>
+          <Button
+            onClick={() =>
+              setDetailDialog({ open: false, event: null })
+            }
+          >
             Cerrar
           </Button>
         </DialogActions>
@@ -270,7 +312,12 @@ export default function CalendarPage() {
           {dialog.isEdit ? "Editar evento" : "Nuevo evento"}
         </DialogTitle>
         <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            mt: 1,
+          }}
         >
           <TextField
             label="Título"
@@ -281,12 +328,20 @@ export default function CalendarPage() {
             fullWidth
           />
 
-          <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+              alignItems: "flex-start",
+            }}
+          >
             <Box sx={{ flex: 1 }}>
               <Typography variant="body2">Desde:</Typography>
               <ReactDatePicker
                 selected={dialog.start}
-                onChange={(date) => setDialog((d) => ({ ...d, start: date }))}
+                onChange={(date) =>
+                  setDialog((d) => ({ ...d, start: date }))
+                }
                 showTimeSelect
                 timeFormat="HH:mm"
                 timeIntervals={15}
@@ -307,7 +362,9 @@ export default function CalendarPage() {
               <Typography variant="body2">Hasta:</Typography>
               <ReactDatePicker
                 selected={dialog.end}
-                onChange={(date) => setDialog((d) => ({ ...d, end: date }))}
+                onChange={(date) =>
+                  setDialog((d) => ({ ...d, end: date }))
+                }
                 showTimeSelect
                 timeFormat="HH:mm"
                 timeIntervals={15}
