@@ -120,7 +120,7 @@ function GlobalLayout() {
           boxSizing: "border-box",
         }}
       >
-        <Box sx={{ width: "90%",  }}>
+        <Box sx={{ width: "90%" }}>
           <Outlet />
         </Box>
       </Box>
