@@ -10,7 +10,7 @@ const FormPage = () => {
 
   return (
     <Box sx={{ p: 2 }}>
-      <Heading sx={{ ml: 14 }} text=" Form" variant="h4" />
+      <Heading sx={{ ml: 100 }} text="Formulario de asistencia" variant="h4" />
       <ValidatedForm onSubmit={onSubmit} />
     </Box>
   );
