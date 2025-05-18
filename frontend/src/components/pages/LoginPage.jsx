@@ -34,7 +34,8 @@ const LoginPage = () => {
       <Heading text="Iniciar Sesión" variant="h4" align="center" />
       <LoginForm onSubmit={handleLogin} />
       <Typography sx={{mt:2, textAlign:"center" }} >
-        ¿No tienes cuenta todavía? <Link to="/register">Regístrate aquí</Link>
+        ¿No tienes cuenta todavía? <Link to="/register-page">Regístrate aquí</Link>
+        
       </Typography>
     </Box>
   );
