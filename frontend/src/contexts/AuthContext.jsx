@@ -1,7 +1,7 @@
 // src/contexts/AuthContext.jsx
 
 import React, { createContext, useState, useEffect, useCallback } from "react";
-import { loginRequest, getMe } from "../services/AuthService";
+import { loginRequest, getMe, registerRequest } from "../services/AuthService";
 import { updateProfile } from "../services/UserService";
 
 export const AuthContext = createContext();
@@ -54,6 +54,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+   const register = async (data) => {
+    await registerRequest(data);
+    const me = await getMe();
+    setUser(me);
+  };
+
  const updateUser = useCallback(
    async (payload) => {
      const updated = await updateProfile(payload);
@@ -65,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider 
-    value={{ user, token, loading, login, logout, updateUser }}
+    value={{ user, token, loading, login, register, logout, updateUser }}
     >  
       {children}
     </AuthContext.Provider>

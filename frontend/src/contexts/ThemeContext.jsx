@@ -21,8 +21,8 @@ export function ThemeProviderCustom({ children }) {
         mode: darkMode ? 'dark' : 'light',
         primary: { main: '#1976d2' },
         background: {
-          default: darkMode ? '#121212' : '#f5f5f5',
-          paper:   darkMode ? '#1d1d1d' : '#ffffff'
+          default: darkMode ? '#242424' : '#dbdbdb',
+          paper:   darkMode ? '#1d1d1d' : '#dbdbdb'
         },
         text: {
           primary:   darkMode ? '#e0e0e0' : '#000000',

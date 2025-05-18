@@ -1,40 +1,47 @@
-const {  DataTypes, Model } = require('sequelize');
-const sequelize = require('../config/database');
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/database");
 
 class User extends Model {}
 
 User.init(
   {
     id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true
-      },
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
-        isEmail: {msg: 'Must be a valid email'}
-      }
+        isEmail: { msg: "Must be a valid email" },
+      },
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    age: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    gender: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize, // We need to pass the connection instance
-    modelName: 'User', // We need to choose the model name
-    tableName: 'Users',
+    modelName: "User", // We need to choose the model name
+    tableName: "Users",
     timestamps: false,
-  },
+  }
 );
 
 // the defined model is the class itself

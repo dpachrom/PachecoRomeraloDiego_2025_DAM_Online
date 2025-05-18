@@ -9,3 +9,8 @@ export const getMe = async () => {
   const response = await api.get("/auth/me");
   return response.data;
 };
+
+export const registerRequest = async (payload) => {
+  const response = await api.post("/auth/register", payload);
+  return response.data; // { token, user }
+};

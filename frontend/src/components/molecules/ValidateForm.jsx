@@ -64,6 +64,19 @@ const ValidatedForm = ({ onSubmit }) => {
       />
 
       <Controller
+        name="email"
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            {...field}
+            label="Email"
+            error={errors.name?.message}
+            helperText={errors.name?.message}
+          />
+        )}
+      />
+
+      <Controller
         name="age"
         control={control}
         render={({ field }) => (
@@ -85,6 +98,19 @@ const ValidatedForm = ({ onSubmit }) => {
             {...field}
             options={genderOptions}
             error={errors.gender?.message}
+          />
+        )}
+      />
+
+            <Controller
+        name="Description"
+        control={control}
+        render={({ field }) => (
+          <TextInput
+            {...field}
+            label="Description"
+            error={errors.name?.message}
+            helperText={errors.name?.message}
           />
         )}
       />

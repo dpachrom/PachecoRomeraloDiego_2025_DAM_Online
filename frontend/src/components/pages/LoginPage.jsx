@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
-import { Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { Box, Typography } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 import Heading from "../atoms/Heading";
 import LoginForm from "../molecules/LoginForm";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -21,7 +21,10 @@ const LoginPage = () => {
   return (
     <Box
       sx={{
-        maxWidth: 400,
+        width: "20%",
+        ml: "40%",
+        alignContent: "center",
+        justifyContent: "center",
         mt: 8,
         p: 2,
         border: "1px solid #ccc",
@@ -30,6 +33,9 @@ const LoginPage = () => {
     >
       <Heading text="Iniciar Sesión" variant="h4" align="center" />
       <LoginForm onSubmit={handleLogin} />
+      <Typography sx={{mt:2, textAlign:"center" }} >
+        ¿No tienes cuenta todavía? <Link to="/register">Regístrate aquí</Link>
+      </Typography>
     </Box>
   );
 };

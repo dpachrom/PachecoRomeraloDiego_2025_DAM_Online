@@ -62,6 +62,7 @@ const LoginForm = ({ onSubmit }) => {
         )}
       />
       <SubmitButton label="Login" sx={{ mt: 2 }} />
+      {/* <RegisterButton /> */}
     </Box>
   );
 };

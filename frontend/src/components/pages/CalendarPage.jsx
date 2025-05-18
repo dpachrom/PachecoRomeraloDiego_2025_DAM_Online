@@ -36,7 +36,7 @@ import {
 // registra el locale
 registerLocale("es", esLocale);
 
-// localizer para react-big-calendar
+// date-fns para react-big-calendar
 const locales = { es };
 const localizer = dateFnsLocalizer({
   format,
@@ -46,9 +46,10 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-// Toolbar personalizado con MUI
-function CustomToolbar({ localizer, label, onNavigate, onView, view }) {
+// Toolbar personalizado
+function CustomToolbar({ label, onNavigate, onView, view }) {
   const theme = useTheme();
+   const displayLabel = view === "agenda" ? "Agenda" : label;
   return (
     <Box
       display="flex"
@@ -61,7 +62,7 @@ function CustomToolbar({ localizer, label, onNavigate, onView, view }) {
         <Button onClick={() => onNavigate("PREV")}>Ant.</Button>
         <Button onClick={() => onNavigate("NEXT")}>Sig.</Button>
       </ButtonGroup>
-      <Typography variant="h6">{label}</Typography>
+      <Typography variant="h6">{displayLabel}</Typography>
       <ButtonGroup variant="outlined" size="small">
         {["month", "week", "day", "agenda"].map((v) => (
           <Button
@@ -79,11 +80,12 @@ function CustomToolbar({ localizer, label, onNavigate, onView, view }) {
 
 export default function CalendarPage() {
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+
   const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState("month");
 
-  // diálogo de creación / edición
   const [dialog, setDialog] = useState({
     open: false,
     isEdit: false,
@@ -93,28 +95,24 @@ export default function CalendarPage() {
     end: null,
   });
 
-  // diálogo de detalle
   const [detailDialog, setDetailDialog] = useState({
     open: false,
     event: null,
   });
 
-  // snackbar
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
-  const closeSnackbar = () =>
-    setSnackbar((s) => ({ ...s, open: false }));
+  const closeSnackbar = () => setSnackbar((s) => ({ ...s, open: false }));
 
-  // carga inicial
   useEffect(() => {
     (async () => {
       try {
         const evs = await getEvents();
         setEvents(evs);
-      } catch (err) {
+      } catch {
         setSnackbar({
           open: true,
           message: "Error al cargar eventos",
@@ -124,26 +122,19 @@ export default function CalendarPage() {
     })();
   }, []);
 
-  // navegación y vista
   const handleNavigate = (date) => setCurrentDate(date);
   const handleView = (view) => setCurrentView(view);
 
-  // slot select → abrir creación
   const handleSelectSlot = ({ start, end }) =>
     setDialog({ open: true, isEdit: false, id: null, title: "", start, end });
+  const handleSelectEvent = (ev) => setDetailDialog({ open: true, event: ev });
 
-  // click evento → detalle
-  const handleSelectEvent = (ev) =>
-    setDetailDialog({ open: true, event: ev });
-
-  // guardar / actualizar
   const handleDialogSave = async () => {
     const { isEdit, id, title, start, end } = dialog;
     try {
       const saved = isEdit
         ? await updateEvent(id, { title, start, end })
         : await createEvent({ title, start, end });
-
       setEvents((prev) =>
         isEdit
           ? prev.map((e) => (e.id === saved.id ? saved : e))
@@ -171,14 +162,11 @@ export default function CalendarPage() {
     }
   };
 
-  // borrar desde detalle
   const handleDelete = () => {
     const { event } = detailDialog;
     deleteEvent(event.id)
       .then(() => {
-        setEvents((prev) =>
-          prev.filter((e) => e.id !== event.id)
-        );
+        setEvents((prev) => prev.filter((e) => e.id !== event.id));
         setSnackbar({
           open: true,
           message: "Evento borrado",
@@ -195,7 +183,6 @@ export default function CalendarPage() {
       );
   };
 
-  // editar desde detalle
   const handleEditFromDetail = () => {
     const { event } = detailDialog;
     setDialog({
@@ -211,16 +198,58 @@ export default function CalendarPage() {
 
   return (
     <Box sx={{ height: "100%", p: 0 }}>
-      {/* inject global hover/toolbar styles */}
+      {/* inyectamos estilos GLOBAL justo antes del Calendar */}
       <GlobalStyles
         styles={{
-          // hover en celdas vacías
-          ".rbc-day-slot .rbc-time-slot:hover": {
-            backgroundColor: theme.palette.action.hover,
+          /* resaltar día hoy */
+          ".rbc-today": {
+            backgroundColor: "#4b8dcd !important",
           },
-          // botones del toolbar
+          /* color base de eventos */
+          ".rbc-event, .rbc-day-slot .rbc-background-event": {
+            backgroundColor: "#023761 !important",
+            borderColor: "#023761 !important",
+          },
+
+          /* MODO CLARO */
+          ...(!isDark
+            ? {
+
+                ".rbc-month-view .rbc-day-bg, .rbc-month-view .rbc-off-range-bg":
+                  {
+                    border: "1px solid #000 !important",
+                  },
+                ".rbc-time-view .rbc-timeslot-group": {
+                  borderLeft: "1px solid #000",
+                  borderBottom: "1px solid #000",
+                },
+                ".rbc-time-view .rbc-time-gutter .rbc-timeslot-group": {
+                  borderLeft: "1px solid #000",
+                },
+                ".rbc-agenda-view table tr": {
+                  borderBottom: "1px solid #000",
+                },
+              }
+            : {
+                ".rbc-month-view .rbc-day-bg, .rbc-month-view .rbc-off-range-bg":
+                  {
+                    border: "1px solid #555 !important",
+                  },
+                ".rbc-time-view .rbc-timeslot-group": {
+                  borderLeft: "1px solid #555",
+                },
+                ".rbc-time-view .rbc-time-gutter .rbc-timeslot-group": {
+                  borderLeft: "1px solid #555",
+                },
+                ".rbc-agenda-view table tr": {
+                  borderBottom: "1px solid #555",
+                },
+              }),
+
           ".rbc-toolbar button": {
-            color: theme.palette.text.primary + " !important",
+            color:
+              theme.palette.getContrastText(theme.palette.background.paper) +
+              " !important",
             borderColor: theme.palette.divider + " !important",
           },
         }}
@@ -238,15 +267,12 @@ export default function CalendarPage() {
         selectable
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
-        style={{ height: "calc(90vh - 64px)" }}
+        style={{ height: "90vh" }}
         culture="es"
+        step={60}
+        timeslots={1}
         components={{
-          toolbar: (toolbarProps) => (
-            <CustomToolbar
-              {...toolbarProps}
-              view={currentView}
-            />
-          ),
+          toolbar: (props) => <CustomToolbar {...props} view={currentView} />,
         }}
         messages={{
           next: "Sig.",
@@ -260,29 +286,25 @@ export default function CalendarPage() {
           time: "Hora",
           event: "Evento",
           noEventsInRange: "No hay eventos",
-          showMore: (total) => `+${total} más`,
+          showMore: (tot) => `+${tot} más`,
         }}
       />
 
-      {/* Detalle */}
+      {/* detalle */}
       <Dialog
         open={detailDialog.open}
         onClose={() => setDetailDialog({ open: false, event: null })}
         fullWidth
         maxWidth="xs"
       >
-        <DialogTitle>Detalle del evento</DialogTitle>
+        <DialogTitle align="center">Detalles</DialogTitle>
         <DialogContent dividers>
-          <Typography variant="h6">
-            {detailDialog.event?.title}
-          </Typography>
+          <Typography variant="h6">{detailDialog.event?.title}</Typography>
           <Typography sx={{ mt: 1 }}>
-            <strong>Desde:</strong>{" "}
-            {detailDialog.event?.start.toLocaleString()}
+            <strong>Desde:</strong> {detailDialog.event?.start.toLocaleString()}
           </Typography>
           <Typography>
-            <strong>Hasta:</strong>{" "}
-            {detailDialog.event?.end.toLocaleString()}
+            <strong>Hasta:</strong> {detailDialog.event?.end.toLocaleString()}
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -291,17 +313,13 @@ export default function CalendarPage() {
           </Button>
           <Divider orientation="vertical" flexItem />
           <Button onClick={handleEditFromDetail}>Editar</Button>
-          <Button
-            onClick={() =>
-              setDetailDialog({ open: false, event: null })
-            }
-          >
+          <Button onClick={() => setDetailDialog({ open: false, event: null })}>
             Cerrar
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Creación / Edición */}
+      {/* creación / edición */}
       <Dialog
         open={dialog.open}
         onClose={() => setDialog((d) => ({ ...d, open: false }))}
@@ -312,12 +330,7 @@ export default function CalendarPage() {
           {dialog.isEdit ? "Editar evento" : "Nuevo evento"}
         </DialogTitle>
         <DialogContent
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            mt: 1,
-          }}
+          sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
         >
           <TextField
             label="Título"
@@ -327,21 +340,12 @@ export default function CalendarPage() {
             }
             fullWidth
           />
-
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              alignItems: "flex-start",
-            }}
-          >
+          <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
             <Box sx={{ flex: 1 }}>
               <Typography variant="body2">Desde:</Typography>
               <ReactDatePicker
                 selected={dialog.start}
-                onChange={(date) =>
-                  setDialog((d) => ({ ...d, start: date }))
-                }
+                onChange={(date) => setDialog((d) => ({ ...d, start: date }))}
                 showTimeSelect
                 timeFormat="HH:mm"
                 timeIntervals={15}
@@ -362,9 +366,7 @@ export default function CalendarPage() {
               <Typography variant="body2">Hasta:</Typography>
               <ReactDatePicker
                 selected={dialog.end}
-                onChange={(date) =>
-                  setDialog((d) => ({ ...d, end: date }))
-                }
+                onChange={(date) => setDialog((d) => ({ ...d, end: date }))}
                 showTimeSelect
                 timeFormat="HH:mm"
                 timeIntervals={15}
@@ -402,7 +404,7 @@ export default function CalendarPage() {
         </DialogActions>
       </Dialog>
 
-      {/* ——— SNACKBAR ——— */}
+      {/* snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

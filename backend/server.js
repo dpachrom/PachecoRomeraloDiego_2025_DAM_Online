@@ -16,7 +16,7 @@ app.use(cors({
 const authRoutes = require('./src/routers/authRoutes');
 const userRoutes = require('./src/routers/userRoutes');
 const taskRoutes = require('./src/routers/taskRoutes');
-const eventRoutes = require("./src/routers/eventRoutes");
+const eventRoutes = require('./src/routers/eventRoutes');
 
 
 // Routes
