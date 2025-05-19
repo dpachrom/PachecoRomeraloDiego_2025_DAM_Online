@@ -35,18 +35,18 @@ export default function RegisterForm() {
     e.preventDefault();
     try {
       await register(form);
-      // notificar + redirigir
       setSn({ open: true, message: "Registro correcto", severity: "success" });
       navigate("/login");
     } catch (err) {
       setSn({
         open: true,
-        // si viene del backend, mostramos ese mensaje
         message: err.response?.data?.message || "Error al registrarse",
         severity: "error",
       });
     }
   };
+
+  
 
   return (
     <Box

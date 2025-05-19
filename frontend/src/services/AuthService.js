@@ -12,5 +12,5 @@ export const getMe = async () => {
 
 export const registerRequest = async (payload) => {
   const response = await api.post("/auth/register", payload);
-  return response.data; // { token, user }
+  return response.data;
 };

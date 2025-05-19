@@ -36,22 +36,22 @@ function GlobalLayout() {
           <>
             <ListItemButton component={Link} to="/">
               <ListItemText
-                primary="Login (Page)"
+                primary="Login"
                 sx={{ textAlign: "center", backgroundColor: "#1976d2" }}
               />
             </ListItemButton>
             <Divider />
           </>
         )}
-        <ListItemButton component={Link} to="/calendar-page">
-          <ListItemText primary="Calendar (Page)" />
+        <ListItemButton component={Link} to="/alendar-page">
+          <ListItemText primary="Calendario" />
         </ListItemButton>
         <ListItemButton component={Link} to="/task-list-page">
-          <ListItemText primary="Task list (Page)" />
+          <ListItemText primary="Tareas" />
         </ListItemButton>
         <Divider />
         <ListItemButton component={Link} to="/form-page">
-          <ListItemText primary="Form (Page)" />
+          <ListItemText primary="Formulario de asistencia" />
         </ListItemButton>
         <Divider />
         {/* Mostrar "Profile" solo si el usuario está autenticado */}
@@ -59,7 +59,7 @@ function GlobalLayout() {
           <>
             <ListItemButton component={Link} to="/profile-page">
               <ListItemText
-                primary="Profile (Page)"
+                primary="Mi Perfil"
                 sx={{ textAlign: "center", backgroundColor: "#1976d2" }}
               />
             </ListItemButton>
