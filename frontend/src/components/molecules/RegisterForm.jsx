@@ -1,5 +1,5 @@
-// src/components/molecules/RegisterForm.jsx
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   TextField,
@@ -14,6 +14,7 @@ const genders = ["male", "female", "other"];
 
 export default function RegisterForm() {
   const { register } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -34,11 +35,14 @@ export default function RegisterForm() {
     e.preventDefault();
     try {
       await register(form);
+      // notificar + redirigir
       setSn({ open: true, message: "Registro correcto", severity: "success" });
+      navigate("/login");
     } catch (err) {
       setSn({
         open: true,
-        message: err.response?.data?.message || "Error",
+        // si viene del backend, mostramos ese mensaje
+        message: err.response?.data?.message || "Error al registrarse",
         severity: "error",
       });
     }

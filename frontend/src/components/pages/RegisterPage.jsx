@@ -1,5 +1,5 @@
-// src/components/pages/RegisterPage.jsx
-import { Box, Typography, Link } from "@mui/material";
+import { Box, Typography, Link as MuiLink } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import RegisterForm from "../molecules/RegisterForm";
 
 export default function RegisterPage() {
@@ -10,7 +10,10 @@ export default function RegisterPage() {
       </Typography>
       <RegisterForm />
       <Typography sx={{ mt: 2, textAlign: "center" }}>
-        ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
+        ¿Ya tienes cuenta?{" "}
+        <MuiLink component={RouterLink} to="/login" underline="hover">
+          Inicia sesión
+        </MuiLink>
       </Typography>
     </Box>
   );
