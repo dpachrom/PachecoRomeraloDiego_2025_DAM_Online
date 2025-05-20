@@ -15,9 +15,9 @@ const login = async (req, res) => {
 
 async function register(req, res) {
   try {
-    const nuevo = await userService.register(req.body);
+    const newUser = await userService.register(req.body);
     // opcional: generar token o devolver datos
-    res.status(201).json({ user: nuevo });
+    res.status(201).json({ user: newUser });
   } catch (err) {
     res.status(err.status || 500).json({ message: err.message });
   }
