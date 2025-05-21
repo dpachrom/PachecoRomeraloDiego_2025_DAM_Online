@@ -14,7 +14,7 @@ import CalendarPage from "./components/pages/CalendarPage";
 import TaskList from "./components/pages/TaskList";
 import FormPage from "./components/pages/FormPage";
 import LoginPage from "./components/pages/LoginPage";
-import RegisterPage from './components/pages/RegisterPage';
+import RegisterPage from "./components/pages/RegisterPage";
 import ProfilePage from "./components/pages/ProfilePage";
 
 function App() {

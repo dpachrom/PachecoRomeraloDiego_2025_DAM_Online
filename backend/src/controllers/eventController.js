@@ -4,7 +4,7 @@ const {
   createEvent,
   updateEvent,
   deleteEvent,
-} = require('../business/eventService');
+} = require("../business/eventService");
 
 async function listEvents(req, res, next) {
   try {

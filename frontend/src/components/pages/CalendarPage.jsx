@@ -33,10 +33,8 @@ import {
   deleteEvent,
 } from "../../services/EventService";
 
-// registra el locale
 registerLocale("es", esLocale);
 
-// date-fns para react-big-calendar
 const locales = { es };
 const localizer = dateFnsLocalizer({
   format,
@@ -46,10 +44,9 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-// Toolbar personalizado
 function CustomToolbar({ label, onNavigate, onView, view }) {
   const theme = useTheme();
-   const displayLabel = view === "agenda" ? "Agenda" : label;
+  const displayLabel = view === "agenda" ? "Agenda" : label;
   return (
     <Box
       display="flex"
@@ -198,23 +195,17 @@ export default function CalendarPage() {
 
   return (
     <Box sx={{ height: "100%", p: 0 }}>
-      {/* inyectamos estilos GLOBAL justo antes del Calendar */}
       <GlobalStyles
         styles={{
-          /* resaltar día hoy */
           ".rbc-today": {
             backgroundColor: "#4b8dcd !important",
           },
-          /* color base de eventos */
           ".rbc-event, .rbc-day-slot .rbc-background-event": {
             backgroundColor: "#023761 !important",
             borderColor: "#023761 !important",
           },
-
-          /* MODO CLARO */
           ...(!isDark
             ? {
-
                 ".rbc-month-view .rbc-day-bg, .rbc-month-view .rbc-off-range-bg":
                   {
                     border: "1px solid #000 !important",
@@ -290,7 +281,6 @@ export default function CalendarPage() {
         }}
       />
 
-      {/* detalle */}
       <Dialog
         open={detailDialog.open}
         onClose={() => setDetailDialog({ open: false, event: null })}
@@ -318,8 +308,6 @@ export default function CalendarPage() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* creación / edición */}
       <Dialog
         open={dialog.open}
         onClose={() => setDialog((d) => ({ ...d, open: false }))}
@@ -403,8 +391,6 @@ export default function CalendarPage() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

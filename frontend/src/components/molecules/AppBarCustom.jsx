@@ -1,4 +1,3 @@
-import React from "react";
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import SwitchDarkMode from "../atoms/SwitchDarkMode";
 import MenuButton from "../atoms/MenuButton";

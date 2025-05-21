@@ -16,13 +16,11 @@ const login = async (req, res) => {
 async function register(req, res) {
   try {
     const newUser = await userService.register(req.body);
-    // opcional: generar token o devolver datos
     res.status(201).json({ user: newUser });
   } catch (err) {
     res.status(err.status || 500).json({ message: err.message });
   }
 }
-
 const me = async (req, res) => {
   try {
     const user = await userService.getUserById(req.user.id);
@@ -34,4 +32,4 @@ const me = async (req, res) => {
   }
 };
 
-module.exports = { login, me, register, };
+module.exports = { login, me, register };

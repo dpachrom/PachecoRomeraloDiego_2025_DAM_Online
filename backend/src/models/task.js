@@ -1,7 +1,7 @@
 // src/models/task.js
-const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../config/database');
-const User = require('./user');
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/database");
+const User = require("./user");
 
 class Task extends Model {}
 
@@ -29,22 +29,20 @@ Task.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users',
-        key: 'id',
+        model: "Users",
+        key: "id",
       },
     },
   },
   {
     sequelize,
-    modelName: 'Task',
-    tableName: 'Tasks',
+    modelName: "Task",
+    tableName: "Tasks",
     timestamps: false,
   }
 );
 
-User.hasMany(Task, { foreignKey: 'userId' });
-Task.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Task, { foreignKey: "userId" });
+Task.belongsTo(User, { foreignKey: "userId" });
 
 module.exports = Task;
-
-

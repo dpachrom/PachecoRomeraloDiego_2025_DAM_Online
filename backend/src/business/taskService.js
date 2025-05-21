@@ -1,10 +1,10 @@
-const Task = require('../models/task');
-const createError = require('../utils/createError');
+const Task = require("../models/task");
+const createError = require("../utils/createError");
 
 async function getTasksForUser(userId) {
   return await Task.findAll({
     where: { userId },
-    order: [['id', 'DESC']],
+    order: [["id", "DESC"]],
   });
 }
 
@@ -14,13 +14,13 @@ async function createTaskForUser(userId, data) {
 
 async function updateTaskForUser(userId, taskId, data) {
   const task = await Task.findOne({ where: { id: taskId, userId } });
-  if (!task) throw createError('Tarea no encontrada', 404);
+  if (!task) throw createError("Tarea no encontrada", 404);
   return await task.update(data);
 }
 
 async function removeTaskForUser(userId, taskId) {
   const deleted = await Task.destroy({ where: { id: taskId, userId } });
-  if (!deleted) throw createError('Tarea no encontrada', 404);
+  if (!deleted) throw createError("Tarea no encontrada", 404);
 }
 
 module.exports = {

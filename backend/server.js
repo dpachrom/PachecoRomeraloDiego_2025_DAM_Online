@@ -5,19 +5,16 @@ const cors = require('cors');
 const sequelize = require('./src/config/database');
 
 const app = express();
-
 app.use(express.json());
 
 app.use(cors({
   origin: 'http://localhost:3000'
 }));
-
 // Routes import
 const authRoutes = require('./src/routers/authRoutes');
 const userRoutes = require('./src/routers/userRoutes');
 const taskRoutes = require('./src/routers/taskRoutes');
 const eventRoutes = require('./src/routers/eventRoutes');
-
 
 // Routes
 app.use('/api/auth', authRoutes);

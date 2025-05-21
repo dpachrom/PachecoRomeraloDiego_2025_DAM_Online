@@ -3,15 +3,12 @@ const bcrypt = require("bcrypt");
 const createError = require("../utils/createError");
 
 async function register({ name, email, password, age, gender }) {
-  // 1) Evitar duplicados
   const exists = await User.findOne({ where: { email } });
   if (exists) {
     throw createError("El email ya está registrado", 409);
   }
 
   const hash = await bcrypt.hash(password, 10);
-
-
   const user = await User.create({
     name,
     email,

@@ -1,5 +1,4 @@
-import React from 'react';
-import CardMedia from '@mui/material/CardMedia';
+import CardMedia from "@mui/material/CardMedia";
 
 const CardImage = ({ src, alt, height = 140, ...props }) => {
   return (

@@ -1,4 +1,3 @@
-// src/components/pages/ProfilePage.jsx
 import React, { useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import ProfileForm from "../molecules/ProfileForm";

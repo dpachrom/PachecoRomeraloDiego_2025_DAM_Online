@@ -6,14 +6,10 @@ const PrivateRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
-   return null;
+    return null;
   }
-  
-  return user && user.isAuthenticated ? (
-    children
-  ) : (
-    <Navigate to="/" replace />
-  );
+
+  return user && user.isAuthenticated ? children : <Navigate to="/" replace />;
 };
 
 export default PrivateRoute;

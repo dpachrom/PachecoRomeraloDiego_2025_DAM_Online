@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
-  List, Box, Button,
-  ListItem, ListItemText, Checkbox,
-  IconButton, TextField,
-  Dialog, DialogTitle, DialogActions
+  List,
+  Box,
+  Button,
+  ListItem,
+  ListItemText,
+  Checkbox,
+  IconButton,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogActions,
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import TaskFilter from "../molecules/TaskFilter";
@@ -11,18 +18,15 @@ import {
   getTasks,
   updateTask,
   createTask,
-  deleteTask
+  deleteTask,
 } from "../../services/TaskService";
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([]);
   const [showPending, setShowPending] = useState(false);
 
-  // inline‐edit
   const [editingId, setEditingId] = useState(null);
   const [editingTitle, setEditingTitle] = useState("");
-
-  // dialog delete
   const [confirm, setConfirm] = useState({ open: false, id: null });
 
   useEffect(() => {
@@ -40,12 +44,11 @@ export default function TaskList() {
   };
 
   const handleToggle = async (id) => {
-    const t = tasks.find(x => x.id === id);
+    const t = tasks.find((x) => x.id === id);
     const updated = await updateTask(id, { completed: !t.completed });
-    setTasks(tasks.map(x => x.id === id ? updated : x));
+    setTasks(tasks.map((x) => (x.id === id ? updated : x)));
   };
 
-  // *** inline edit handlers ***
   const startEdit = (t) => {
     setEditingId(t.id);
     setEditingTitle(t.title);
@@ -53,22 +56,19 @@ export default function TaskList() {
   const cancelEdit = () => setEditingId(null);
   const saveEdit = async () => {
     const updated = await updateTask(editingId, { title: editingTitle });
-    setTasks(tasks.map(x => x.id === editingId ? updated : x));
+    setTasks(tasks.map((x) => (x.id === editingId ? updated : x)));
     cancelEdit();
   };
 
-  // *** delete dialog handlers ***
   const askDelete = (id) => setConfirm({ open: true, id });
   const closeDelete = () => setConfirm({ open: false, id: null });
   const confirmDelete = async () => {
     await deleteTask(confirm.id);
-    setTasks(tasks.filter(x => x.id !== confirm.id));
+    setTasks(tasks.filter((x) => x.id !== confirm.id));
     closeDelete();
   };
 
-  const filtered = showPending
-    ? tasks.filter(t => !t.completed)
-    : tasks;
+  const filtered = showPending ? tasks.filter((t) => !t.completed) : tasks;
 
   return (
     <Box sx={{ p: 2 }}>
@@ -83,8 +83,9 @@ export default function TaskList() {
       </Box>
 
       <List>
-        {filtered.map(t => (
-          <ListItem key={t.id} 
+        {filtered.map((t) => (
+          <ListItem
+            key={t.id}
             secondaryAction={
               <>
                 <IconButton onClick={() => askDelete(t.id)}>
@@ -100,9 +101,9 @@ export default function TaskList() {
             {editingId === t.id ? (
               <TextField
                 value={editingTitle}
-                onChange={e => setEditingTitle(e.target.value)}
+                onChange={(e) => setEditingTitle(e.target.value)}
                 onBlur={saveEdit}
-                onKeyDown={e => e.key === "Enter" && saveEdit()}
+                onKeyDown={(e) => e.key === "Enter" && saveEdit()}
                 autoFocus
                 fullWidth
               />
@@ -117,7 +118,6 @@ export default function TaskList() {
         ))}
       </List>
 
-      {/* Dialog de confirmación de borrado */}
       <Dialog open={confirm.open} onClose={closeDelete}>
         <DialogTitle>¿Eliminar esta tarea?</DialogTitle>
         <DialogActions>

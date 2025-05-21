@@ -25,7 +25,6 @@ const login = async (email, password) => {
 };
 
 async function register({ name, email, password, age, gender }) {
-  // comprueba primero que no exista otro user con ese email...
   const exists = await userService.getByEmail(email);
   if (exists) throw createError("Email ya registrado", 409);
 

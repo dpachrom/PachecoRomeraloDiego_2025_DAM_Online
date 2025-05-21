@@ -7,8 +7,8 @@ import { updateProfile } from "../services/UserService";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser]     = useState(null);
-  const [token, setToken]   = useState(null);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const logout = useCallback(() => {
@@ -54,23 +54,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-   const register = async (data) => {
+  const register = async (data) => {
     await registerRequest(data);
   };
 
- const updateUser = useCallback(
-   async (payload) => {
-     const updated = await updateProfile(payload);
-     setUser({ ...updated, isAuthenticated: true });
-     return updated;
-   },
-   []
- );
+  const updateUser = useCallback(async (payload) => {
+    const updated = await updateProfile(payload);
+    setUser({ ...updated, isAuthenticated: true });
+    return updated;
+  }, []);
 
   return (
-    <AuthContext.Provider 
-    value={{ user, token, loading, login, register, logout, updateUser }}
-    >  
+    <AuthContext.Provider
+      value={{ user, token, loading, login, register, logout, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

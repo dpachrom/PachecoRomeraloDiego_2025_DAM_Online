@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Box } from "@mui/material";
 import TextInput from "../atoms/TextInput";
@@ -62,7 +61,6 @@ const LoginForm = ({ onSubmit }) => {
         )}
       />
       <SubmitButton label="Login" sx={{ mt: 2 }} />
-      {/* <RegisterButton /> */}
     </Box>
   );
 };

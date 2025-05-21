@@ -1,5 +1,9 @@
-import React from 'react';
-import { RadioGroup, FormControlLabel, Radio, FormHelperText } from '@mui/material';
+import {
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormHelperText,
+} from "@mui/material";
 
 const RadioInput = ({ value, error, onChange, options, ...props }) => {
   return (

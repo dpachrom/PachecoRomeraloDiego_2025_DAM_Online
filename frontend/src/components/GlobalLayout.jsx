@@ -82,7 +82,6 @@ function GlobalLayout() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-
       <AppBarCustom
         title="DPR PFC"
         onMenuClick={

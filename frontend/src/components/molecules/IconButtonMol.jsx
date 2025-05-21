@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Alert, Collapse } from "@mui/material";
 import Heading from "../atoms/Heading";
 import ButtonIcon from "../atoms/ButtonIcon";

@@ -3,7 +3,7 @@ const {
   createTaskForUser,
   updateTaskForUser,
   removeTaskForUser,
-} = require('../business/taskService');
+} = require("../business/taskService");
 
 const listTasks = async (req, res) => {
   try {
@@ -26,7 +26,11 @@ const addTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
   try {
-    const updated = await updateTaskForUser(req.user.id, req.params.id, req.body);
+    const updated = await updateTaskForUser(
+      req.user.id,
+      req.params.id,
+      req.body
+    );
     res.json(updated);
   } catch (err) {
     res.status(err.status || 500).json({ message: err.message });

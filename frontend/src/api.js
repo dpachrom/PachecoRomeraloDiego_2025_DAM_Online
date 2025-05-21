@@ -1,4 +1,3 @@
-// src/api.js
 import axios from "axios";
 
 const api = axios.create({
@@ -6,7 +5,6 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// Interceptor para añadir token excepto en /auth/register
 api.interceptors.request.use(
   (config) => {
     if (!config.url?.endsWith("/auth/register")) {

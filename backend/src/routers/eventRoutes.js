@@ -9,8 +9,8 @@ const {
   removeEvent,
 } = require("../controllers/eventController");
 
-router.get("/",    auth, listEvents);
-router.post("/",   auth, addEvent);
+router.get("/", auth, listEvents);
+router.post("/", auth, addEvent);
 router.patch("/:id", auth, editEvent);
 router.delete("/:id", auth, removeEvent);
 
