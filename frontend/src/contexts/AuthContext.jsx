@@ -56,8 +56,6 @@ export const AuthProvider = ({ children }) => {
 
    const register = async (data) => {
     await registerRequest(data);
-    const me = await getMe();
-    setUser(me);
   };
 
  const updateUser = useCallback(
